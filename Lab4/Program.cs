@@ -6,27 +6,18 @@ namespace Lab4
 {
     internal static class Program
     {
-        /// <summary>Аргумент командной строки: каталог, который нужно сделать текущим при запуске.</summary>
-        public const string DirArgument = "--dir";
-
         [STAThread]
-        private static void Main(string[] args)
+        private static void Main()
         {
-            if (args.Length >= 2 && args[0] == DirArgument)
-                NativeMethods.SetCurrentDirectory(args[1]);
-
-            // Нужен для кодировок Windows-1251 / CP866 (ANSI/OEM-тексты файлов и буфера обмена)
+            // Подключаем кодировку Windows-1251: в ней 1 символ = 1 байт (нужно для п.4)
             Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
 
-            Application.SetHighDpiMode(HighDpiMode.SystemAware);
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
 
-            // Заставка
+            // Сначала заставка, затем главное окно
             using (var splash = new SplashForm())
-            {
                 splash.ShowDialog();
-            }
 
             Application.Run(new MainForm());
         }

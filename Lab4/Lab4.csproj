@@ -8,7 +8,6 @@
     <AssemblyName>Lab4</AssemblyName>
     <Nullable>disable</Nullable>
     <ImplicitUsings>disable</ImplicitUsings>
-    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     <!-- Позволяет собирать проект и вне Windows (например, в CI); на Windows ни на что не влияет -->
     <EnableWindowsTargeting>true</EnableWindowsTargeting>
     <Product>Лабораторная работа 4. Win32 API</Product>
