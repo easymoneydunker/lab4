@@ -49,9 +49,6 @@ namespace Lab4
             this.tabClipboard.SuspendLayout();
             this.flpClipboard.SuspendLayout();
             this.SuspendLayout();
-            //
-            // menuStrip (пункты меню команд добавляются в MainForm.cs)
-            //
             this.menuStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
                 this.mnuFile, this.mnuFiles, this.mnuMemory, this.mnuClipboard, this.mnuHelp });
             this.menuStrip.Name = "menuStrip";
@@ -70,17 +67,11 @@ namespace Lab4
             this.mnuHelpContents.Click += new System.EventHandler(this.mnuHelpContents_Click);
             this.mnuAbout.Text = "&О программе";
             this.mnuAbout.Click += new System.EventHandler(this.mnuAbout_Click);
-            //
-            // tabControl
-            //
             this.tabControl.Controls.Add(this.tabFiles);
             this.tabControl.Controls.Add(this.tabMemory);
             this.tabControl.Controls.Add(this.tabClipboard);
             this.tabControl.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tabControl.Name = "tabControl";
-            //
-            // tabFiles: слева кнопки п.1–12, справа вывод
-            //
             this.tabFiles.Controls.Add(this.txtFiles);
             this.tabFiles.Controls.Add(this.flpFiles);
             this.tabFiles.Padding = new System.Windows.Forms.Padding(3);
@@ -104,9 +95,6 @@ namespace Lab4
             this.lblDrive.Text = "Диск для п.10–12:";
             this.cmbDrive.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.cmbDrive.Size = new System.Drawing.Size(300, 23);
-            //
-            // tabMemory: сверху кнопки, ниже вывод
-            //
             this.tabMemory.Controls.Add(this.txtMemory);
             this.tabMemory.Controls.Add(this.flpMemory);
             this.tabMemory.Padding = new System.Windows.Forms.Padding(3);
@@ -121,9 +109,6 @@ namespace Lab4
             this.txtMemory.WordWrap = false;
             this.flpMemory.AutoSize = true;
             this.flpMemory.Dock = System.Windows.Forms.DockStyle.Top;
-            //
-            // tabClipboard: сверху кнопки, число форматов, ниже список форматов
-            //
             this.tabClipboard.Controls.Add(this.lstFormats);
             this.tabClipboard.Controls.Add(this.lblCount);
             this.tabClipboard.Controls.Add(this.flpClipboard);
@@ -149,14 +134,8 @@ namespace Lab4
             this.txtClipText.Margin = new System.Windows.Forms.Padding(3, 5, 3, 3);
             this.txtClipText.Size = new System.Drawing.Size(220, 23);
             this.txtClipText.Text = "Привет из C#!";
-            //
-            // timerClipboard
-            //
             this.timerClipboard.Interval = 1000;
             this.timerClipboard.Tick += new System.EventHandler(this.timerClipboard_Tick);
-            //
-            // MainForm
-            //
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1100, 700);

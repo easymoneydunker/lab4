@@ -3,7 +3,6 @@ using System.Windows.Forms;
 
 namespace Lab4
 {
-    /// <summary>Заставка: показывается 2 секунды при запуске или до щелчка мышью.</summary>
     public class SplashForm : Form
     {
         public SplashForm()

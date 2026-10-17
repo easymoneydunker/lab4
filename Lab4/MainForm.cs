@@ -15,7 +15,6 @@ namespace Lab4
         {
             InitializeComponent();
 
-            // Каждая команда — это кнопка на вкладке и пункт в меню, обе вызывают один метод
             AddCommands(tabFiles, flpFiles, mnuFiles, new (string, Action)[]
             {
                 ("1. Создать каталоги", Step1),
@@ -48,18 +47,13 @@ namespace Lab4
             });
 
             InitFiles();
-            chkTimer.Checked = true;   // как в примере из методички — опрос буфера по таймеру
+            chkTimer.Checked = true;
         }
-
-        // ==================================================================
-        //  Общие вспомогательные методы
-        // ==================================================================
 
         private void AddCommands(TabPage tab, FlowLayoutPanel panel, ToolStripMenuItem menu, (string Text, Action Run)[] commands)
         {
             foreach (var (text, run) in commands)
             {
-                // При ошибке показываем окно с её описанием, программа продолжает работу
                 void Execute()
                 {
                     tabControl.SelectedTab = tab;
@@ -106,11 +100,6 @@ namespace Lab4
                  "4.2.1. Файловые операции\n4.2.2. Работа с памятью\n4.2.3. Буфер обмена\n\n" +
                  $"C#, Windows Forms, .NET {Environment.Version}");
 
-        // ==================================================================
-        //  4.2.1. ФАЙЛОВЫЕ ОПЕРАЦИИ
-        // ==================================================================
-
-        // Каталожная структура из лабораторной № 3 (создаётся в текущем каталоге)
         private static readonly string[] Dirs = { @"S1\S2\S4", @"S1\S3\S5" };
 
         private const string File1 = "file1.txt";
@@ -118,19 +107,17 @@ namespace Lab4
         private const string VolumeLabel = "LABEL";
         private static readonly DateTime NewCreationTime = new DateTime(2001, 1, 1, 10, 0, 0);
 
-        // Windows-1251: каждый символ — ровно 1 байт, поэтому «8 байт» = 8 букв
         private static Encoding Ansi => Encoding.GetEncoding(1251);
 
-        private string rootDir;      // <текущий каталог>\TESTDIR
-        private string s1Dir;        // <текущий каталог>\TESTDIR\S1
-        private bool runningAll;     // «Выполнить п.1–9»: без лишних окон
+        private string rootDir;
+        private string s1Dir;
+        private bool runningAll;
 
         private void InitFiles()
         {
             rootDir = Path.Combine(Directory.GetCurrentDirectory(), "TESTDIR");
             s1Dir = Path.Combine(rootDir, "S1");
 
-            // Диски для п.10–12; по умолчанию — текущий
             foreach (DriveInfo d in DriveInfo.GetDrives().Where(d => d.IsReady))
                 cmbDrive.Items.Add(d.Name);
             cmbDrive.SelectedItem = Path.GetPathRoot(rootDir);
@@ -148,7 +135,6 @@ namespace Lab4
             Log("=== " + text + " ===");
         }
 
-        /// <summary>Переходит в S1; если структуры нет — сообщает, что сначала нужен п.1.</summary>
         private void GoToS1()
         {
             if (!Directory.Exists(s1Dir))
@@ -163,7 +149,6 @@ namespace Lab4
                 throw new FileNotFoundException("Файл file1.txt не найден в S1. Сначала выполните п.2.");
         }
 
-        /// <summary>Удаляет файл, оставшийся от прошлого запуска (даже если он «только для чтения»).</summary>
         private static void DeleteIfExists(string path)
         {
             if (!File.Exists(path))
@@ -172,7 +157,6 @@ namespace Lab4
             File.Delete(path);
         }
 
-        /// <summary>Выводит дерево каталогов и файлов.</summary>
         private void PrintTree(string dir, string indent)
         {
             foreach (string sub in Directory.GetDirectories(dir))
@@ -187,7 +171,6 @@ namespace Lab4
             }
         }
 
-        // П.1. Создать каталожную структуру и вывести её на экран
         private void Step1()
         {
             Title("П.1. Создание каталожной структуры");
@@ -195,7 +178,7 @@ namespace Lab4
             {
                 string path = Path.Combine(rootDir, dir);
                 Log((Directory.Exists(path) ? "Уже существует: " : "Создан: ") + path);
-                Directory.CreateDirectory(path);   // создаёт и все промежуточные каталоги
+                Directory.CreateDirectory(path);
             }
 
             Directory.SetCurrentDirectory(s1Dir);
@@ -205,7 +188,6 @@ namespace Lab4
             PrintTree(rootDir, "    ");
         }
 
-        // П.2. Создать в S1 файл file1.txt и записать в него строку
         private void Step2()
         {
             Title("П.2. Создание file1.txt");
@@ -215,7 +197,6 @@ namespace Lab4
             Log($"Создан {Path.GetFullPath(File1)}, записано {new FileInfo(File1).Length} байт");
         }
 
-        // П.3. Прочитать содержимое файла и вывести на экран
         private void Step3()
         {
             Title("П.3. Чтение file1.txt");
@@ -224,36 +205,33 @@ namespace Lab4
             Log($"Содержимое: \"{text}\"");
         }
 
-        // П.4. Прочитать 8 байт, начиная с байта 5
         private void Step4()
         {
             Title("П.4. Чтение 8 байт с 5-го байта");
             RequireFile1();
             using (FileStream fs = File.OpenRead(File1))
             {
-                fs.Seek(4, SeekOrigin.Begin);        // байты нумеруются с 0, поэтому 5-й байт — это смещение 4
+                fs.Seek(4, SeekOrigin.Begin);
                 var buffer = new byte[8];
                 int count = fs.Read(buffer, 0, buffer.Length);
                 Log($"Прочитано {count} байт: \"{Ansi.GetString(buffer, 0, count)}\"");
             }
         }
 
-        // П.5. Добавить к концу файла строку и вывести содержимое
         private void Step5()
         {
             Title("П.5. Добавление строки в конец file1.txt");
             RequireFile1();
             using (var fs = new FileStream(File1, FileMode.Open, FileAccess.ReadWrite, FileShare.ReadWrite))
             {
-                long end = fs.Seek(0, SeekOrigin.End);                 // переходим в конец файла
+                long end = fs.Seek(0, SeekOrigin.End);
                 byte[] data = Ansi.GetBytes("\r\nДополнительная строка");
 
-                fs.Lock(end, data.Length);                              // блокируем участок, куда пишем
+                fs.Lock(end, data.Length);
                 fs.Write(data, 0, data.Length);
                 fs.Flush();
                 Log($"Записано {data.Length} байт с позиции {end} (участок заблокирован)");
 
-                // Пока участок заблокирован, другой поток открыть его для чтения не может
                 try
                 {
                     using (var other = new FileStream(File1, FileMode.Open, FileAccess.Read, FileShare.ReadWrite))
@@ -275,7 +253,6 @@ namespace Lab4
             Log(File.ReadAllText(File1, Ansi));
         }
 
-        // П.6. Установить атрибуты «только чтение» и «скрытый», попытаться удалить файл
         private void Step6()
         {
             Title("П.6. Атрибуты и попытка удаления");
@@ -295,7 +272,6 @@ namespace Lab4
             }
         }
 
-        // П.7. Снять атрибут «скрытый» и изменить дату и время создания
         private void Step7()
         {
             Title("П.7. Снятие атрибута «скрытый», изменение даты создания");
@@ -308,7 +284,6 @@ namespace Lab4
             Log("Дата создания стала: " + File.GetCreationTime(File1));
         }
 
-        // П.8. Переименовать file1.txt в file2.txt
         private void Step8()
         {
             Title("П.8. Переименование file1.txt → file2.txt");
@@ -318,7 +293,6 @@ namespace Lab4
             Log("Файл переименован: " + Path.GetFullPath(File2));
         }
 
-        // П.9. Переслать file2.txt в S2, скопировать в S3, показать содержимое S1, S2, S3
         private void Step9()
         {
             Title("П.9. Перемещение в S2 и копирование в S3");
@@ -354,7 +328,6 @@ namespace Lab4
             return new DriveInfo((string)cmbDrive.SelectedItem);
         }
 
-        // П.10. Установить метку тома 'LABEL'
         private void Step10()
         {
             Title("П.10. Установка метки тома");
@@ -373,7 +346,6 @@ namespace Lab4
             }
         }
 
-        // П.11. Найти метку тома и убедиться, что она совпадает с заданной
         private void Step11()
         {
             Title("П.11. Проверка метки тома");
@@ -394,7 +366,6 @@ namespace Lab4
                 Warning($"Метка диска {drive.Name} — «{label}», НЕ совпадает с «{VolumeLabel}».");
         }
 
-        // П.12. Изменить метку средствами ОС и проверить; затем стереть метку и проверить снова
         private void Step12()
         {
             Title("П.12. Изменение метки средствами Windows");
@@ -431,16 +402,11 @@ namespace Lab4
                 Log("Каталога нет");
                 return;
             }
-            // Файл «только для чтения» удалить нельзя — сначала сбрасываем атрибуты
             foreach (string file in Directory.GetFiles(rootDir, "*", SearchOption.AllDirectories))
                 File.SetAttributes(file, FileAttributes.Normal);
             Directory.Delete(rootDir, true);
             Log("Каталог удалён: " + rootDir);
         }
-
-        // ==================================================================
-        //  4.2.2. РАБОТА С ПАМЯТЬЮ
-        // ==================================================================
 
         private void Mem(string text = "") => txtMemory.AppendText(text + Environment.NewLine);
 
@@ -448,7 +414,6 @@ namespace Lab4
 
         private static string Hex(IntPtr p) => "0x" + p.ToInt64().ToString("X12");
 
-        // 1) Основная системная информация (аналог GetSystemInfo)
         private void ShowSystemInfo()
         {
             Mem("=== 1) Информация о системе ===");
@@ -463,7 +428,6 @@ namespace Lab4
             Mem();
         }
 
-        // 2) Текущее состояние памяти (аналог GlobalMemoryStatus)
         private void ShowMemoryStatus()
         {
             var info = new ComputerInfo();
@@ -487,8 +451,6 @@ namespace Lab4
             Mem();
         }
 
-        // 3) Состояние виртуального адресного пространства.
-        // В .NET нет аналога VirtualQuery, поэтому только её объявляем напрямую из kernel32.dll.
         [StructLayout(LayoutKind.Sequential)]
         private struct MEMORY_BASIC_INFORMATION
         {
@@ -517,7 +479,7 @@ namespace Lab4
                 Mem("VirtualQuery для разных адресов:");
                 QueryAddress("Начало программы (EXE)", p.MainModule.BaseAddress);
 
-                IntPtr block = Marshal.AllocHGlobal(4096);           // блок в неуправляемой куче
+                IntPtr block = Marshal.AllocHGlobal(4096);
                 QueryAddress("Блок, выделенный AllocHGlobal", block);
                 Marshal.FreeHGlobal(block);
             }
@@ -567,17 +529,12 @@ namespace Lab4
             Mem($"    Type           = {type}");
         }
 
-        // ==================================================================
-        //  4.2.3. БУФЕР ОБМЕНА
-        // ==================================================================
-
         private string lastFormats = "";
 
         private void chkTimer_CheckedChanged(object sender, EventArgs e) => timerClipboard.Enabled = chkTimer.Checked;
 
         private void timerClipboard_Tick(object sender, EventArgs e) => RefreshFormats(false);
 
-        /// <summary>Определение форматов данных, которые сейчас находятся в буфере обмена.</summary>
         private void RefreshFormats(bool force)
         {
             IDataObject data;
@@ -587,17 +544,17 @@ namespace Lab4
             }
             catch (ExternalException)
             {
-                return;   // буфер сейчас открыт другой программой — попробуем на следующем такте
+                return;
             }
             if (data == null)
                 return;
 
-            string[] stored = data.GetFormats(false);   // форматы, в которых данные реально лежат
-            string[] all = data.GetFormats(true);       // плюс те, в которые их можно преобразовать
+            string[] stored = data.GetFormats(false);
+            string[] all = data.GetFormats(true);
 
             string key = string.Join("|", all);
             if (!force && key == lastFormats)
-                return;                                  // ничего не изменилось
+                return;
             lastFormats = key;
 
             lblCount.Text = $"Всего форматов доступно: {stored.Length}   (с учётом автопреобразования: {all.Length})";

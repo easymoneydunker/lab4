@@ -3,7 +3,6 @@ using System.Windows.Forms;
 
 namespace Lab4
 {
-    /// <summary>Справочная система: окно с текстом справки (F1).</summary>
     public class HelpForm : Form
     {
         public HelpForm()
